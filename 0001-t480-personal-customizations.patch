@@ -2,31 +2,33 @@ From: ankhseraph <florin.anghel@man.ase.ro>
 Date: Wed, 21 May 2026 00:00:00 +0000
 Subject: [PATCH] t480: personal customizations for nidhoggr build
 
-Changes applied on top of Libreboot 26.01 stable (git tag 26.01) for a
-ThinkPad T480 (non-S), 16MB SPI NOR flash (Winbond W25Q128.V).
+Based on Libreboot 26.01 (git tag 26.01), ThinkPad T480 (non-S), 16MB SPI NOR.
 
-Summary of changes:
-- Enable Fn/Ctrl key swap at the H8 EC level (affects all OSes + GRUB)
-- Enable TPM 2.0 (disable NO_TPM, enable TPM2)
-- Switch payload from seabios to grubsea (GRUB primary, SeaBIOS available
-  as seabios.elf from GRUB menu)
-- Set GRUB boot timeout to 0 (instant boot, no menu delay)
-
-Note: CONFIG_FSP_HYPERTHREADING is intentionally left disabled here (upstream
-default for Spectre/Meltdown mitigation). To re-enable SMT and get 8 threads
-on i5/i7-8xxx, set CONFIG_FSP_HYPERTHREADING=y in both coreboot configs.
+- CONFIG_FSP_HYPERTHREADING=y — enable SMT, 8 threads on i5/i7-8xxx
+- CONFIG_H8_FN_CTRL_SWAP=y — fn/ctrl swap at EC level, affects all OSes
+- payload_grubsea — grub primary, seabios accessible from grub menu
+- set timeout=0 — no grub delay
 
 ---
- config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb | 2 +-
- config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode     | 2 +-
+ config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb | 4 ++--
+ config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode     | 4 ++--
  config/coreboot/t480_vfsp_16mb/target.cfg                    | 2 +-
  config/grub/xhci_nvme/config/payload                         | 6 +-----
- 4 files changed, 5 insertions(+), 7 deletions(-)
+ 4 files changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
-index 9e54ced6..7a1a7045 100644
+index 9e54ced6..aa186a3b 100644
 --- a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
 +++ b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
+@@ -354,7 +354,7 @@ CONFIG_INTEL_CAR_NEM_ENHANCED=y
+ # CONFIG_USE_INTEL_FSP_MP_INIT is not set
+ CONFIG_CPU_SUPPORTS_PM_TIMER_EMULATION=y
+ CONFIG_HAVE_HYPERTHREADING=y
+-# CONFIG_FSP_HYPERTHREADING is not set
++CONFIG_FSP_HYPERTHREADING=y
+ # CONFIG_INTEL_KEYLOCKER is not set
+ # CONFIG_SOC_INTEL_COMMON_BLOCK_PRMRR_SIZE_MAX is not set
+ # CONFIG_SOC_INTEL_COMMON_BLOCK_PRMRR_SIZE_256MB is not set
 @@ -508,7 +508,7 @@ CONFIG_EC_LENOVO_H8=y
  CONFIG_H8_BEEP_ON_DEATH=y
  CONFIG_H8_FLASH_LEDS_ON_DEATH=y
@@ -36,22 +38,19 @@ index 9e54ced6..7a1a7045 100644
  CONFIG_H8_HAS_BAT_THRESHOLDS_IMPL=y
  CONFIG_H8_HAS_PRIMARY_FN_KEYS=y
  CONFIG_H8_HAS_LEDLOGO=y
-@@ -704,9 +704,9 @@ CONFIG_DRIVERS_MTK_WIFI=y
- #
- # Trusted Platform Module
- #
--CONFIG_NO_TPM=y
-+# CONFIG_NO_TPM is not set
- # CONFIG_TPM1 is not set
--# CONFIG_TPM2 is not set
-+CONFIG_TPM2=y
- CONFIG_MAINBOARD_HAS_TPM2=y
- CONFIG_PCR_BOOT_MODE=1
- CONFIG_PCR_HWID=1
 diff --git a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
-index bcf90216..3679ee69 100644
+index bcf90216..76345042 100644
 --- a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
 +++ b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
+@@ -352,7 +352,7 @@ CONFIG_INTEL_CAR_NEM_ENHANCED=y
+ # CONFIG_USE_INTEL_FSP_MP_INIT is not set
+ CONFIG_CPU_SUPPORTS_PM_TIMER_EMULATION=y
+ CONFIG_HAVE_HYPERTHREADING=y
+-# CONFIG_FSP_HYPERTHREADING is not set
++CONFIG_FSP_HYPERTHREADING=y
+ # CONFIG_INTEL_KEYLOCKER is not set
+ # CONFIG_SOC_INTEL_COMMON_BLOCK_PRMRR_SIZE_MAX is not set
+ # CONFIG_SOC_INTEL_COMMON_BLOCK_PRMRR_SIZE_256MB is not set
 @@ -506,7 +506,7 @@ CONFIG_EC_LENOVO_H8=y
  CONFIG_H8_BEEP_ON_DEATH=y
  CONFIG_H8_FLASH_LEDS_ON_DEATH=y
@@ -61,18 +60,6 @@ index bcf90216..3679ee69 100644
  CONFIG_H8_HAS_BAT_THRESHOLDS_IMPL=y
  CONFIG_H8_HAS_PRIMARY_FN_KEYS=y
  CONFIG_H8_HAS_LEDLOGO=y
-@@ -697,9 +697,9 @@ CONFIG_DRIVERS_MTK_WIFI=y
- #
- # Trusted Platform Module
- #
--CONFIG_NO_TPM=y
-+# CONFIG_NO_TPM is not set
- # CONFIG_TPM1 is not set
--# CONFIG_TPM2 is not set
-+CONFIG_TPM2=y
- CONFIG_MAINBOARD_HAS_TPM2=y
- CONFIG_PCR_BOOT_MODE=1
- CONFIG_PCR_HWID=1
 diff --git a/config/coreboot/t480_vfsp_16mb/target.cfg b/config/coreboot/t480_vfsp_16mb/target.cfg
 index 1cc6d167..199c5c20 100644
 --- a/config/coreboot/t480_vfsp_16mb/target.cfg
