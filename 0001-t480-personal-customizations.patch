@@ -4,22 +4,32 @@ Subject: [PATCH] t480: personal customizations for nidhoggr build
 
 Based on Libreboot 26.01 (git tag 26.01), ThinkPad T480 (non-S), 16MB SPI NOR.
 
+- CONFIG_MAINBOARD_SMBIOS_PRODUCT_NAME="ThinkPad T480" — was "T480"; TLP 1.8+
+  has a Libreboot fallback that checks product_name when product_version lacks
+  "ThinkPad", so this is required for TLP battery care (thresholds) to work
 - CONFIG_FSP_HYPERTHREADING=y — enable SMT, 8 threads on i5/i7-8xxx
 - CONFIG_H8_FN_CTRL_SWAP=y — fn/ctrl swap at EC level, affects all OSes
 - payload_grubsea — grub primary, seabios accessible from grub menu
 - set timeout=0 — no grub delay
 
 ---
- config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb | 4 ++--
- config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode     | 4 ++--
+ config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb | 6 +++---
+ config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode     | 6 +++---
  config/coreboot/t480_vfsp_16mb/target.cfg                    | 2 +-
  config/grub/xhci_nvme/config/payload                         | 6 +-----
- 4 files changed, 7 insertions(+), 9 deletions(-)
+ 4 files changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
 index 9e54ced6..aa186a3b 100644
 --- a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
 +++ b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
+@@ -152,7 +152,7 @@
+ # CONFIG_DISABLE_HECI1_AT_PRE_BOOT is not set
+ CONFIG_PRERAM_CBMEM_CONSOLE_SIZE=0xc00
+-CONFIG_MAINBOARD_SMBIOS_PRODUCT_NAME="T480"
++CONFIG_MAINBOARD_SMBIOS_PRODUCT_NAME="ThinkPad T480"
+ # CONFIG_CONSOLE_POST is not set
+ CONFIG_FSP_FD_PATH="3rdparty/fsp/KabylakeFspBinPkg/Fsp.fd"
 @@ -354,7 +354,7 @@ CONFIG_INTEL_CAR_NEM_ENHANCED=y
  # CONFIG_USE_INTEL_FSP_MP_INIT is not set
  CONFIG_CPU_SUPPORTS_PM_TIMER_EMULATION=y
@@ -42,6 +52,13 @@ diff --git a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode b/config/c
 index bcf90216..76345042 100644
 --- a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
 +++ b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
+@@ -150,7 +150,7 @@
+ # CONFIG_DISABLE_HECI1_AT_PRE_BOOT is not set
+ CONFIG_PRERAM_CBMEM_CONSOLE_SIZE=0xc00
+-CONFIG_MAINBOARD_SMBIOS_PRODUCT_NAME="T480"
++CONFIG_MAINBOARD_SMBIOS_PRODUCT_NAME="ThinkPad T480"
+ # CONFIG_CONSOLE_POST is not set
+ CONFIG_FSP_FD_PATH="3rdparty/fsp/KabylakeFspBinPkg/Fsp.fd"
 @@ -352,7 +352,7 @@ CONFIG_INTEL_CAR_NEM_ENHANCED=y
  # CONFIG_USE_INTEL_FSP_MP_INIT is not set
  CONFIG_CPU_SUPPORTS_PM_TIMER_EMULATION=y
