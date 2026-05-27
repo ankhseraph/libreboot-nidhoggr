@@ -1,0 +1,42 @@
+From 5bdea720a1aba4f76916c931c4dd00f40ab7aeb5 Mon Sep 17 00:00:00 2001
+From: ankhseraph <git_o6zrqb@ankhseraph.com>
+Date: Wed, 27 May 2026 18:41:09 +0300
+Subject: [PATCH] ec/h8: default f1_to_f12_as_primary to 0 (hotkeys primary)
+
+CMOS does not persist this value on T480 with Libreboot, so the fallback
+of 1 (function keys primary = FnLock ON) applied on every boot. Setting
+the fallback to 0 makes multimedia hotkeys the default on cold boot.
+---
+ src/ec/lenovo/h8/cfr.h | 2 +-
+ src/ec/lenovo/h8/h8.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/ec/lenovo/h8/cfr.h b/src/ec/lenovo/h8/cfr.h
+index b410f2d449..cb67d1b2f2 100644
+--- a/src/ec/lenovo/h8/cfr.h
++++ b/src/ec/lenovo/h8/cfr.h
+@@ -148,7 +148,7 @@ static const struct sm_object f1_to_f12_as_primary = SM_DECLARE_ENUM({
+ 	.opt_name	= "f1_to_f12_as_primary",
+ 	.ui_name	= "Primary Function keys",
+ 	.ui_helptext	= "F1-F12 default act as function keys",
+-	.default_value	= 1,
++	.default_value	= 0,
+ 	.values		= (const struct sm_enum_value[]) {
+ 				{ "Disabled",	0	},
+ 				{ "Enabled",	1	},
+diff --git a/src/ec/lenovo/h8/h8.c b/src/ec/lenovo/h8/h8.c
+index 1ea3ccfa40..c73ebe20de 100644
+--- a/src/ec/lenovo/h8/h8.c
++++ b/src/ec/lenovo/h8/h8.c
+@@ -338,7 +338,7 @@ static void h8_enable(struct device *dev)
+ 	h8_sticky_fn(get_uint_option("sticky_fn", 0));
+ 
+ 	if (CONFIG(H8_HAS_PRIMARY_FN_KEYS))
+-		f1_to_f12_as_primary(get_uint_option("f1_to_f12_as_primary", 1));
++		f1_to_f12_as_primary(get_uint_option("f1_to_f12_as_primary", 0));
+ 
+ 	h8_charge_priority(get_uint_option("first_battery", PRIMARY_BATTERY));
+ 
+-- 
+2.51.2
+

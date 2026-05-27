@@ -2,25 +2,30 @@ From: ankhseraph <florin.anghel@man.ase.ro>
 Date: Wed, 21 May 2026 00:00:00 +0000
 Subject: [PATCH] t480: personal customizations for nidhoggr build
 
-Based on Libreboot 26.01 (git tag 26.01), ThinkPad T480 (non-S), 16MB SPI NOR.
+Changes applied on top of Libreboot 26.01 stable (git tag 26.01) for a
+ThinkPad T480 (non-S), 16MB SPI NOR flash (Winbond W25Q128.V).
 
-- CONFIG_MAINBOARD_SMBIOS_PRODUCT_NAME="ThinkPad T480" — was "T480"; TLP 1.8+
-  has a Libreboot fallback that checks product_name when product_version lacks
-  "ThinkPad", so this is required for TLP battery care (thresholds) to work
-- CONFIG_FSP_HYPERTHREADING=y — enable SMT, 8 threads on i5/i7-8xxx
-- CONFIG_H8_FN_CTRL_SWAP=y — fn/ctrl swap at EC level, affects all OSes
-- payload_grubsea — grub primary, seabios accessible from grub menu
-- set timeout=0 — no grub delay
+Summary of changes:
+- Enable hyperthreading (CONFIG_FSP_HYPERTHREADING=y) for 8 threads on i5-8350U
+- Enable Fn/Ctrl key swap at the H8 EC level (affects all OSes + GRUB)
+- Switch payload from seabios to grubsea (GRUB primary, SeaBIOS available
+  as seabios.elf from GRUB menu)
+- Set GRUB boot timeout to 0 (instant boot, no menu delay)
+- Set SMBIOS product_name to "ThinkPad T480" (was "T480") so TLP 1.8+
+  can detect this as a ThinkPad via its Libreboot fallback path and use
+  the thinkpad plugin with natacpi to enforce battery charge thresholds
+- Default f1_to_f12_as_primary to 0 (hotkeys primary, FnLock OFF on boot)
+  via config/coreboot/default/patches/0052-ec-h8-default-f1_to_f12_as_primary-to-0-hotkeys-primary.patch
 
 ---
- config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb | 6 +++---
- config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode     | 6 +++---
+ config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb | 2 +-
+ config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode     | 2 +-
  config/coreboot/t480_vfsp_16mb/target.cfg                    | 2 +-
  config/grub/xhci_nvme/config/payload                         | 6 +-----
- 4 files changed, 9 insertions(+), 11 deletions(-)
+ 4 files changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
-index 9e54ced6..aa186a3b 100644
+index 9e54ced6..7a1a7045 100644
 --- a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
 +++ b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_corebootfb
 @@ -152,7 +152,7 @@
@@ -49,7 +54,7 @@ index 9e54ced6..aa186a3b 100644
  CONFIG_H8_HAS_PRIMARY_FN_KEYS=y
  CONFIG_H8_HAS_LEDLOGO=y
 diff --git a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
-index bcf90216..76345042 100644
+index bcf90216..3679ee69 100644
 --- a/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
 +++ b/config/coreboot/t480_vfsp_16mb/config/libgfxinit_txtmode
 @@ -150,7 +150,7 @@
